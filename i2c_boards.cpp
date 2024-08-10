@@ -11,7 +11,7 @@ MCP23017::MCP23017(String name, int id, std::array<int, 16> buttonBindings) {
 
 void MCP23017::initialize() {
     if (!board.begin_I2C()) {
-        Serial.println("Error.");
+        Serial.println("MCP23017 Error");
         while (1);
     }
 
