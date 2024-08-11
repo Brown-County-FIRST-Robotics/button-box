@@ -19,8 +19,8 @@ class MCP23017 : public I2cBoard {
     public:
         MCP23017(String name, int id, std::array<int, 16> buttonBindings);
 
-        bool initialize();
-        void update();
+        bool initialize() override;
+        void update() override;
 
     private:
         Adafruit_MCP23X17 board;
@@ -35,8 +35,8 @@ class ADS1015 : public I2cBoard {
     public:
         ADS1015(String name, int id, std::array<int, 4> axisBindings, bool differential = false);
 
-        bool initialize();
-        void update();
+        bool initialize() override;
+        void update() override;
     
     private:
         Adafruit_ADS1015 board;
@@ -50,8 +50,8 @@ class ADS7830 : public I2cBoard {
     public:
         ADS7830(String name, int id, std::array<int, 8> axisBindings, bool differential = false);
 
-        bool initialize();
-        void update();
+        bool initialize() override;
+        void update() override;
 
     private:
         Adafruit_ADS7830 board;
