@@ -11,7 +11,7 @@ class I2cBoard {
         String name;
         int i2c_id;
 
-        virtual bool initialize();
+        virtual bool initialize(); //returns whether the board is connected
         virtual void update();
 };
 
@@ -31,6 +31,10 @@ class MCP23017 : public I2cBoard {
         int debounce_timers[16] = {};
 };
 
+//TEMP
+#define ANALOG_PRINT_TIMER 20
+//END TEMP
+
 class ADS1015 : public I2cBoard {
     public:
         ADS1015(String name, int id, std::array<int, 4> axisBindings, bool differential = false);
@@ -44,6 +48,10 @@ class ADS1015 : public I2cBoard {
 
         const float DEADZONE = 0.01;
         bool differential;
+
+        //TEMP
+        int printTimer = 0;
+        //END_TEMP
 };
 
 class ADS7830 : public I2cBoard {
@@ -59,4 +67,8 @@ class ADS7830 : public I2cBoard {
 
         const float DEADZONE = 0.01;
         bool differential;
+
+        //TEMP
+        int printTimer = 0;
+        //END_TEMP
 };

@@ -28,7 +28,7 @@ void refreshModules() { //refreshes activeModules to the current button box sutu
 
   for (int i = 0; i < allModules.size(); i++) {
     if (allModules[i]->initialize()) {
-      activeModules.push_back(i); //TODO: add a function to check current modules without initializing them to prevent reinitialization
+      activeModules.push_back(i);
     }
   }
 }
