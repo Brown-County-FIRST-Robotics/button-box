@@ -28,7 +28,7 @@ void MCP23017::update() {
     for (int i = 0; i < 16; i++) {
         if (pinButtonBindings[i] != 0) {
             if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) { //TODO: try using board.readGPIOAB() rather than digitalRead
-                Serial.println(String(pinButtonBindings[i] - 1)); //activate button in DInput //NOTE: String may be too large for embedded
+                Serial.println(String(pinButtonBindings[i] - 1)); //activate button in DInput //NOTE: String type may be too large for embedded
 
                 button_states[i] = true;
                 debounce_timers[i] = DEBOUNCE_TIME;

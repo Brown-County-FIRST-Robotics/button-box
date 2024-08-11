@@ -9,7 +9,6 @@ std::array<I2cBoard*, 1> allModules = {
 
 std::vector<int> activeModules; //list of indices of allModules that are active
 
-//TODO: check which modules are connected
 void setup() {
   Serial.begin(9600);
   while (!Serial) delay(10);
@@ -21,7 +20,7 @@ void loop() {
   for (int i : activeModules) {
     allModules[i]->update(); //TODO: check what happens when an i2c device is disconnected and then the program attempts to read from it
   }
-  //TODO?: Add button to refresh modules, or refresh periodically
+  //TODO: Add button to refresh modules, or refresh periodically
 }
 
 void refreshModules() { //refreshes activeModules to the current button box sutup
@@ -29,7 +28,7 @@ void refreshModules() { //refreshes activeModules to the current button box sutu
 
   for (int i = 0; i < allModules.size(); i++) {
     if (allModules[i]->initialize()) {
-      activeModules.push_back(i); //TODO: take action to prevent reinitialization, either add a deactivate function or check current modules without initializing them
+      activeModules.push_back(i); //TODO: add a function to check current modules without initializing them to prevent reinitialization
     }
   }
 }

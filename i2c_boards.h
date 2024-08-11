@@ -24,7 +24,7 @@ class MCP23017 : public I2cBoard {
 
     private:
         Adafruit_MCP23X17 board;
-        std::array<int, 16> pinButtonBindings; //which DInput button each pin (A0-B7) is bound to //TODO: check whether this refence will work
+        std::array<int, 16> pinButtonBindings; //which DInput button each pin (A0-B7) is bound to
 
         bool button_states[16] = {};
         const int DEBOUNCE_TIME = 50;
