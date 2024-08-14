@@ -32,7 +32,7 @@ class MCP23017 : public I2cBoard {
 };
 
 //TEMP
-#define ANALOG_PRINT_TIMER 20
+#define ANALOG_PRINT_TIMER 0
 //END TEMP
 
 class ADS1015 : public I2cBoard {
@@ -46,7 +46,9 @@ class ADS1015 : public I2cBoard {
         Adafruit_ADS1015 board;
         std::array<int, 4> pinAxisBindings; //which DInput axis each pin is bound to
 
-        const float DEADZONE = 0.01;
+        double getScaledReading(int id); // scales the reading to -1 to 1
+
+        const float DEADZONE = 0.08;
         bool differential;
 
         //TEMP
@@ -65,10 +67,12 @@ class ADS7830 : public I2cBoard {
         Adafruit_ADS7830 board;
         std::array<int, 8> pinAxisBindings; //which DInput axis each pin is bound to
 
-        const float DEADZONE = 0.01;
+        double getScaledReading(int id); // scales the reading to -1 to 1
+
+        const float DEADZONE = 0.1;
         bool differential;
 
         //TEMP
-        int printTimer = 0;
+        int printTimer[8] = {};
         //END_TEMP
 };

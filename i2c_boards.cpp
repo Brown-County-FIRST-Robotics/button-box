@@ -61,31 +61,35 @@ bool ADS1015::initialize() {
 }
 
 void ADS1015::update() {
-  if (differential) {
+  if (differential) { //Untested
     for (int i = 0; i < 2; i++) {
         if (pinAxisBindings[i] != 0) {
             int16_t value = (i == 0 ? board.readADC_Differential_0_1() : board.readADC_Differential_2_3());
-            if (std::abs(value) > DEADZONE) {
-              if (printTimer != 0) { //TEMP
+            // if (std::abs(value) > DEADZONE) {
+              // if (printTimer != 0) { //TEMP
                   Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(value)); //Update DInput axis
                   printTimer = ANALOG_PRINT_TIMER; //TEMP
-                } //TEMP
-            }
+                // } //TEMP
+            // }
         }
     }
   }
   else {
     for (int i = 0; i < 4; i++) {
         if (pinAxisBindings[i] != 0) {
-            if (std::abs(board.readADC_SingleEnded(i)) > DEADZONE) {
-              if (printTimer != 0) { //TEMP
-                  Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(board.readADC_SingleEnded(i))); //Update DInput axis
+            if (std::abs(getScaledReading(i)) > DEADZONE) {
+              // if (printTimer != 0) { //TEMP
+                  Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
                   printTimer = ANALOG_PRINT_TIMER; //TEMP
-                } //TEMP
+                // } //TEMP
             }
         }
     }
   }
+}
+
+double ADS1015::getScaledReading(int id) { // scales the reading to -1 to 1
+  return (board.readADC_SingleEnded(id) / (1100.0 / 2)) - 1;
 }
 
 ADS7830::ADS7830(String name, int id, std::array<int, 8> axisBindings, bool differential) {
@@ -103,36 +107,50 @@ bool ADS7830::initialize() {
 }
 
 void ADS7830::update() {
-  if (differential) {
+  if (differential) { //Untested
     for (int i = 0; i < 4; i++) {
       if (pinAxisBindings[i] != 0) {
         if (std::abs(board.readADCdifferential(i)) > DEADZONE) {
-          if (printTimer != 0) { //TEMP
+          if (printTimer[i] != 0) { //TEMP
             Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(board.readADCdifferential(i))); //Update DInput axis
-            printTimer = ANALOG_PRINT_TIMER; //TEMP
+            printTimer[i] = ANALOG_PRINT_TIMER; //TEMP
           } //TEMP
         }
       }
+
+      
+  //TEMP
+  if (printTimer[i] > 0) {
+    printTimer[i]--;
+  }
+  //END TEMP
+
+
     }
   }
   else {
     for (int i = 0; i < 8; i++) {
       if (pinAxisBindings[i] != 0) {
-          if (std::abs(board.readADCsingle(i)) > DEADZONE) {
-              if (printTimer != 0) { //TEMP
-                Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(board.readADCsingle(i))); //Update DInput axis
-                printTimer = ANALOG_PRINT_TIMER; //TEMP
+          if (std::abs(getScaledReading(i)) > DEADZONE) {
+              if (printTimer[i] == 0) { //TEMP
+                Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
+                printTimer[i] = ANALOG_PRINT_TIMER; //TEMP
               } //TEMP
           }
       }
-    }
-  }
 
 
   //TEMP
-  if (printTimer > 0) {
-    printTimer--;
+  if (printTimer[i] > 0) {
+    printTimer[i]--;
   }
   //END TEMP
 
+
+    }
+  }
+}
+
+double ADS7830::getScaledReading(int id) { // scales the reading to -1 to 1
+  return (board.readADCsingle(id) / (255.0 / 2)) - 1;
 }
