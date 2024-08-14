@@ -4,8 +4,6 @@
 #include <Adafruit_ADS1X15.h>
 #include <Adafruit_ADS7830.h>
 
-// IMPORTANT NOTE: Dinput button and axis ids are from 1-128 and 1-8 respectively in this program so that 0 can be used as null (pin has no binding)
-
 class I2cBoard {
     public:
         String name;
@@ -27,13 +25,9 @@ class MCP23017 : public I2cBoard {
         std::array<int, 16> pinButtonBindings; //which DInput button each pin (A0-B7) is bound to
 
         bool button_states[16] = {};
-        const int DEBOUNCE_TIME = 50;
+        const int DEBOUNCE_TIME = 20;
         int debounce_timers[16] = {};
 };
-
-//TEMP
-#define ANALOG_PRINT_TIMER 0
-//END TEMP
 
 class ADS1015 : public I2cBoard {
     public:
@@ -50,10 +44,6 @@ class ADS1015 : public I2cBoard {
 
         const float DEADZONE = 0.08;
         bool differential;
-
-        //TEMP
-        int printTimer = 0;
-        //END_TEMP
 };
 
 class ADS7830 : public I2cBoard {
@@ -71,8 +61,4 @@ class ADS7830 : public I2cBoard {
 
         const float DEADZONE = 0.1;
         bool differential;
-
-        //TEMP
-        int printTimer[8] = {};
-        //END_TEMP
 };

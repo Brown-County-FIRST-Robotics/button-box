@@ -27,8 +27,8 @@ bool MCP23017::initialize() {
 void MCP23017::update() {
     for (int i = 0; i < 16; i++) {
         if (pinButtonBindings[i] != 0) {
-            if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) { //TODO: try using board.readGPIOAB() rather than digitalRead
-                Serial.println(String(pinButtonBindings[i] - 1)); //activate button in DInput //NOTE: String type may be too large for embedded
+            if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) {
+                Serial.println(String(pinButtonBindings[i] - 1)); //activate button in DInput
 
                 button_states[i] = true;
                 debounce_timers[i] = DEBOUNCE_TIME;
@@ -65,12 +65,9 @@ void ADS1015::update() {
     for (int i = 0; i < 2; i++) {
         if (pinAxisBindings[i] != 0) {
             int16_t value = (i == 0 ? board.readADC_Differential_0_1() : board.readADC_Differential_2_3());
-            // if (std::abs(value) > DEADZONE) {
-              // if (printTimer != 0) { //TEMP
-                  Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(value)); //Update DInput axis
-                  printTimer = ANALOG_PRINT_TIMER; //TEMP
-                // } //TEMP
-            // }
+            if (std::abs(value) > DEADZONE) {
+              Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(value)); //Update DInput axis
+            }
         }
     }
   }
@@ -78,10 +75,7 @@ void ADS1015::update() {
     for (int i = 0; i < 4; i++) {
         if (pinAxisBindings[i] != 0) {
             if (std::abs(getScaledReading(i)) > DEADZONE) {
-              // if (printTimer != 0) { //TEMP
-                  Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
-                  printTimer = ANALOG_PRINT_TIMER; //TEMP
-                // } //TEMP
+              Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
             }
         }
     }
@@ -111,42 +105,18 @@ void ADS7830::update() {
     for (int i = 0; i < 4; i++) {
       if (pinAxisBindings[i] != 0) {
         if (std::abs(board.readADCdifferential(i)) > DEADZONE) {
-          if (printTimer[i] != 0) { //TEMP
-            Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(board.readADCdifferential(i))); //Update DInput axis
-            printTimer[i] = ANALOG_PRINT_TIMER; //TEMP
-          } //TEMP
+          Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(board.readADCdifferential(i))); //Update DInput axis
         }
       }
-
-      
-  //TEMP
-  if (printTimer[i] > 0) {
-    printTimer[i]--;
-  }
-  //END TEMP
-
-
     }
   }
   else {
     for (int i = 0; i < 8; i++) {
       if (pinAxisBindings[i] != 0) {
-          if (std::abs(getScaledReading(i)) > DEADZONE) {
-              if (printTimer[i] == 0) { //TEMP
-                Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
-                printTimer[i] = ANALOG_PRINT_TIMER; //TEMP
-              } //TEMP
-          }
+        if (std::abs(getScaledReading(i)) > DEADZONE) {
+          Serial.println("Axis " +  String(pinAxisBindings[i] - 1) + ": " + String(getScaledReading(i))); //Update DInput axis
+        }
       }
-
-
-  //TEMP
-  if (printTimer[i] > 0) {
-    printTimer[i]--;
-  }
-  //END TEMP
-
-
     }
   }
 }

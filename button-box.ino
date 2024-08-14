@@ -1,8 +1,10 @@
-// #include <PicoGamepad.h>
 #include <vector>
 
 #include "i2c_boards.h"
 
+
+// IMPORTANT NOTE: Dinput button and axis ids are from 1-128 and 1-8 respectively in this program so that 0 can be used as "null" (pin has no binding)
+// They are decremented by 1 to output to buttons 0-127 in DInput
 std::array<I2cBoard*, 3> allModules = {
   new MCP23017("Oli Industrial Box", 0x20, {1, 2, 3, 4, 5, 6}),
   new ADS7830("Cool Joystick", 0x48, {}),
@@ -20,9 +22,8 @@ void setup() {
 
 void loop() {
   for (int i : activeModules) {
-    allModules[i]->update(); //TODO: check what happens when an i2c device is disconnected and then the program attempts to read from it
+    allModules[i]->update();
   }
-  //TODO: Add button to refresh modules, or refresh periodically
 }
 
 void checkActiveModules() { //sets activeModules to the current button box sutup
