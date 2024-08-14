@@ -34,11 +34,19 @@ void checkActiveModules() { //sets activeModules to the current button box sutup
   for (int i = 0; i < allModules.size(); i++) {
     if (allModules[i].boards[0]->initialize()) { //assumes that the module is connected if its first board is connected
       activeModules.push_back(i);
+      for (int j = 1; j < allModules[i].boards.size(); j++) { //initialize the rest of the boards
+        allModules[i].boards[j]->initialize();
+      }
     }
+  }
+
+  Serial.println("Active modules:");
+  for (int i : activeModules) {
+    Serial.println(" " + allModules[i].name);
   }
 }
 
 struct Module {
-  string name;
+  std::string name;
   std::vector<I2cBoard*> boards;
 };
