@@ -5,10 +5,10 @@
 
 // IMPORTANT NOTE: Dinput button and axis ids are from 1-128 and 1-8 respectively in this program so that 0 can be used as "null" (pin has no binding)
 // They are decremented by 1 to output to buttons 0-127 in DInput
-std::array<I2cBoard*, 3> allModules = {
-  new MCP23017("Oli Industrial Box", 0x20, {1, 2, 3, 4, 5, 6}),
-  new ADS7830("Cool Joystick", 0x48, {}),
-  new ADS1015("Accurate Analog", 0x49, {1, 2})
+std::array<Module, 3> allModules = {
+  {"Oli Industrial Box", new MCP23017(0x20, {1, 2, 3, 4, 5, 6})},
+  {"Fancy Joystick", new ADS7830(0x48, {})},
+  {"Accurate Analog", new ADS1015(0x49, {1, 2})}
 };
 
 std::vector<int> activeModules; //list of indices of allModules that are active
@@ -22,7 +22,9 @@ void setup() {
 
 void loop() {
   for (int i : activeModules) {
-    allModules[i]->update();
+    for (I2cBoard* board : allModules[i].boards) {
+      board->update();
+    }
   }
 }
 
@@ -30,8 +32,13 @@ void checkActiveModules() { //sets activeModules to the current button box sutup
   activeModules.clear();
 
   for (int i = 0; i < allModules.size(); i++) {
-    if (allModules[i]->initialize()) {
+    if (allModules[i].boards[0]->initialize()) { //assumes that the module is connected if its first board is connected
       activeModules.push_back(i);
     }
   }
 }
+
+struct Module {
+  string name;
+  std::vector<I2cBoard*> boards;
+};

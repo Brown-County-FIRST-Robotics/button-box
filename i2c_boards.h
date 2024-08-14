@@ -6,7 +6,6 @@
 
 class I2cBoard {
     public:
-        String name;
         int i2c_id;
 
         virtual bool initialize(); //returns whether the board is connected
@@ -15,7 +14,7 @@ class I2cBoard {
 
 class MCP23017 : public I2cBoard {
     public:
-        MCP23017(String name, int id, std::array<int, 16> buttonBindings);
+        MCP23017(int id, std::array<int, 16> buttonBindings);
 
         bool initialize() override;
         void update() override;
@@ -31,7 +30,7 @@ class MCP23017 : public I2cBoard {
 
 class ADS1015 : public I2cBoard {
     public:
-        ADS1015(String name, int id, std::array<int, 4> axisBindings, bool differential = false);
+        ADS1015(int id, std::array<int, 4> axisBindings, bool differential = false);
 
         bool initialize() override;
         void update() override;
@@ -48,7 +47,7 @@ class ADS1015 : public I2cBoard {
 
 class ADS7830 : public I2cBoard {
     public:
-        ADS7830(String name, int id, std::array<int, 8> axisBindings, bool differential = false);
+        ADS7830(int id, std::array<int, 8> axisBindings, bool differential = false);
 
         bool initialize() override;
         void update() override;

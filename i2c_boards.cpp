@@ -4,8 +4,7 @@
 bool I2cBoard::initialize() {return false;}
 void I2cBoard::update() {}
 
-MCP23017::MCP23017(String name, int id, std::array<int, 16> buttonBindings) {
-    I2cBoard::name = name;
+MCP23017::MCP23017(int id, std::array<int, 16> buttonBindings) {
     I2cBoard::i2c_id = id;
     pinButtonBindings = buttonBindings;
 }
@@ -46,8 +45,7 @@ void MCP23017::update() {
     }
 }
 
-ADS1015::ADS1015(String name, int id, std::array<int, 4> axisBindings, bool differential) {
-    I2cBoard::name = name;
+ADS1015::ADS1015(int id, std::array<int, 4> axisBindings, bool differential) {
     I2cBoard::i2c_id = id;
     pinAxisBindings = axisBindings;
     this->differential = differential;
@@ -86,8 +84,7 @@ double ADS1015::getScaledReading(int id) { // scales the reading to -1 to 1
   return (board.readADC_SingleEnded(id) / (1100.0 / 2)) - 1;
 }
 
-ADS7830::ADS7830(String name, int id, std::array<int, 8> axisBindings, bool differential) {
-    I2cBoard::name = name;
+ADS7830::ADS7830(int id, std::array<int, 8> axisBindings, bool differential) {
     I2cBoard::i2c_id = id;
     pinAxisBindings = axisBindings;
     this->differential = differential;
