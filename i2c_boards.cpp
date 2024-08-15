@@ -1,4 +1,6 @@
 #include <cmath>
+#include <Joystick.h>
+
 #include "i2c_boards.h"
 
 bool I2cBoard::initialize() {return false;}
@@ -27,7 +29,7 @@ void MCP23017::update() {
     for (int i = 0; i < 16; i++) {
         if (pinButtonBindings[i] != 0) {
             if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) {
-                dInput.pressButton(pinButtonBindings[i] - 1);
+                Joystick.button(pinButtonBindings[i] - 1, true);
 
                 button_states[i] = true;
                 debounce_timers[i] = DEBOUNCE_TIME;
@@ -35,7 +37,7 @@ void MCP23017::update() {
             
             else {
                 if (button_states[i] && board.digitalRead(i)) {
-                  dInput.releaseButton(pinButtonBindings[i] - 1);
+                  Joystick.button(pinButtonBindings[i] - 1, false);
                   button_states[i] = false;
                 }
                 if (debounce_timers[i] > 0) {
@@ -57,12 +59,6 @@ bool ADS1015::initialize() {
         return false;
     }
 
-    for (int id : pinAxisBindings) {
-      if (id != 0) {
-        setDInputAxisRange(id - 1, 0, 1100);
-      }
-    }
-
     return true;
 }
 
@@ -72,7 +68,8 @@ void ADS1015::update() {
         if (pinAxisBindings[i] != 0) {
             int value = (i == 0 ? board.readADC_Differential_0_1() : board.readADC_Differential_2_3());
             if (std::abs(value) > DEADZONE) {
-              setDInputAxis(pinAxisBindings[i] - 1, value);
+              Joystick.use10bit();
+              setJoystickAxis(pinAxisBindings[i] - 1, value);
             }
         }
     }
@@ -81,7 +78,8 @@ void ADS1015::update() {
     for (int i = 0; i < 4; i++) {
         if (pinAxisBindings[i] != 0) {
             if (std::abs(board.readADC_SingleEnded(i)) > DEADZONE) {
-              setDInputAxis(pinAxisBindings[i] - 1, board.readADC_SingleEnded(i));
+              Joystick.use10bit();
+              setJoystickAxis(pinAxisBindings[i] - 1, board.readADC_SingleEnded(i));
             }
         }
     }
@@ -99,21 +97,16 @@ bool ADS7830::initialize() {
         return false;
     }
     
-    for (int id : pinAxisBindings) {
-      if (id != 0) {
-        setDInputAxisRange(id - 1, 0, 255);
-      }
-    }
-
     return true;
 }
 
 void ADS7830::update() {
-  if (differential) { //Untested
+  if (differential) { //Untested //TODO: simplify the analog update functions to merge differential and singlended more
     for (int i = 0; i < 4; i++) {
       if (pinAxisBindings[i] != 0) {
         if (std::abs(board.readADCdifferential(i)) > DEADZONE) {
-          setDInputAxis(pinAxisBindings[i] - 1, board.readADCdifferential(i));
+          Joystick.use8bit(false); //TODO: check what the parameter in this does (I think it changes whether it's -127 to 127 or 0 to 127)
+          setJoystickAxis(pinAxisBindings[i] - 1, board.readADCdifferential(i));
         }
       }
     }
@@ -122,86 +115,34 @@ void ADS7830::update() {
     for (int i = 0; i < 8; i++) {
       if (pinAxisBindings[i] != 0) {
         if (std::abs(board.readADCsingle(i)) > DEADZONE) {
-          setDInputAxis(pinAxisBindings[i] - 1, board.readADCsingle(i));
+          Joystick.use8bit(false);
+          setJoystickAxis(pinAxisBindings[i] - 1, board.readADCsingle(i));
         }
       }
     }
   }
 }
 
-//Helper functions
-void setDInputAxisRange(int axis, int32_t min, int32_t max) {
+// Helper function to set axes based on number rather than name
+void setJoystickAxis(int axis, int value) {
   switch (axis) {
     case 0:
-      dInput.setXAxisRange(min, max);
+      Joystick.X(value);
       break;
     case 1:
-      dInput.setYAxisRange(min, max);
+      Joystick.Y(value);
       break;
     case 2:
-      dInput.setZAxisRange(min, max);
+      Joystick.Z(value);
       break;
     case 3:
-      dInput.setRxAxisRange(min, max);
+      Joystick.Zrotate(value);
       break;
     case 4:
-      dInput.setRyAxisRange(min, max);
+      Joystick.sliderLeft(value);
       break;
     case 5:
-      dInput.setRzAxisRange(min, max);
-      break;
-    case 6:
-      dInput.setRudderRange(min, max);
-      break;
-    case 7:
-      dInput.setThrottleRange(min, max);
-      break;
-    case 8:
-      dInput.setAcceleratorRange(min, max);
-      break;
-    case 9:
-      dInput.setBrakeRange(min, max);
-      break;
-    case 10:
-      dInput.setSteeringRange(min, max);
-      break;
-  }
-}
-
-void setDInputAxis(int axis, int32_t value) {
-  switch (axis) {
-    case 0:
-      dInput.setXAxis(value);
-      break;
-    case 1:
-      dInput.setYAxis(value);
-      break;
-    case 2:
-      dInput.setZAxis(value);
-      break;
-    case 3:
-      dInput.setRxAxis(value);
-      break;
-    case 4:
-      dInput.setRyAxis(value);
-      break;
-    case 5:
-      dInput.setRzAxis(value);
-      break;
-    case 6:
-      dInput.setRudder(value);
-      break;
-    case 7:
-      dInput.setThrottle(value);
-      break;
-    case 8:
-      dInput.setAccelerator(value);
-      break;
-    case 9:
-      dInput.setBrake(value);
-      break;
-    case 10:
-      dInput.setSteering(value);
+      Joystick.sliderRight(value);
       break;
   }
 }

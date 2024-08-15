@@ -4,8 +4,6 @@
 #include <Adafruit_ADS1X15.h>
 #include <Adafruit_ADS7830.h>
 
-extern Joystick_ dInput;
-
 class I2cBoard {
     public:
         int i2c_id;
@@ -60,6 +58,5 @@ class ADS7830 : public I2cBoard {
         bool differential;
 };
 
-// Helper functions to set axes based on number rather than name
-void setDInputAxisRange(int axis, int32_t min, int32_t max);
-void setDInputAxis(int axis, int32_t value);
+// Helper function to set axes based on number rather than name
+void setJoystickAxis(int axis, int value);
