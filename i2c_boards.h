@@ -4,6 +4,8 @@
 #include <Adafruit_ADS1X15.h>
 #include <Adafruit_ADS7830.h>
 
+extern Joystick_ dInput;
+
 class I2cBoard {
     public:
         int i2c_id;
@@ -39,9 +41,7 @@ class ADS1015 : public I2cBoard {
         Adafruit_ADS1015 board;
         std::array<int, 4> pinAxisBindings; //which DInput axis each pin is bound to
 
-        double getScaledReading(int id); // scales the reading to -1 to 1
-
-        const float DEADZONE = 0.08;
+        const float DEADZONE = (0.08 + 1) * (1100.0 / 2); // (__joystick_value__ + 1) * (ADC_max / 2)
         bool differential;
 };
 
@@ -56,8 +56,10 @@ class ADS7830 : public I2cBoard {
         Adafruit_ADS7830 board;
         std::array<int, 8> pinAxisBindings; //which DInput axis each pin is bound to
 
-        double getScaledReading(int id); // scales the reading to -1 to 1
-
-        const float DEADZONE = 0.1;
+        const float DEADZONE = (0.1 + 1) * (255.0 / 2);
         bool differential;
 };
+
+// Helper functions to set axes based on number rather than name
+void setDInputAxisRange(int axis, int32_t min, int32_t max);
+void setDInputAxis(int axis, int32_t value);
