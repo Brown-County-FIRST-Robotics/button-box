@@ -18,10 +18,10 @@ Joystick_ dInput{};
 // IMPORTANT NOTE: Dinput button and axis ids are from 1-128 and 1-8 respectively in this program so that 0 can be used as "null" (pin has no binding)
 // They are decremented by 1 to output to buttons 0-127 in DInput
 std::vector<Module> allModules = {
-  {"Oli Industrial Box", {new MCP23017(0x20, {2,3,4,5,6,7,8,9})}},
-  {"Oli Industrial Box2", {new MCP23017(0x23, {10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25})}},
-  {"Fancy Joystick", {new ADS7830(0x48, {})}},
-  {"Accurate Analog", {new ADS1015(0x49, {1, 2})}}
+  {"Oli Industrial Box", {new MCP23017(0x20, {alloc(1),alloc(2),alloc(3),alloc(4),alloc(5),alloc(6),alloc(7),alloc(8)})}}
+//  {"Oli Industrial Box2", {new MCP23017(0x23, {10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25})}},
+//{"Fancy Joystick", {new ADS7830(0x48, {})}},
+//  {"Accurate Analog", {new ADS1015(0x49, {1, 2})}}
 };
 
 std::vector<int> activeModules; //list of indices of allModules that are active
