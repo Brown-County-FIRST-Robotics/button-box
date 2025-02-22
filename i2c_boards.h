@@ -3,6 +3,7 @@
 #include <Adafruit_MCP23X17.h>
 #include <Adafruit_ADS1X15.h>
 #include <Adafruit_ADS7830.h>
+#include "Outputs.h"
 
 class I2cBoard {
     public:
@@ -14,14 +15,14 @@ class I2cBoard {
 
 class MCP23017 : public I2cBoard {
     public:
-        MCP23017(int id, std::array<int, 16> buttonBindings);
+        MCP23017(int id, std::vector<Output*> buttonBindings);
 
         bool initialize() override;
         void update() override;
 
     private:
         Adafruit_MCP23X17 board;
-        std::array<int, 16> pinButtonBindings; //which DInput button each pin (A0-B7) is bound to
+        std::vector<Output*> pinButtonBindings; //which DInput button each pin (A0-B7) is bound to
 
         bool button_states[16] = {};
         const int DEBOUNCE_TIME = 20;

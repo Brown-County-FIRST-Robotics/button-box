@@ -6,7 +6,7 @@
 bool I2cBoard::initialize() {return false;}
 void I2cBoard::update() {}
 
-MCP23017::MCP23017(int id, std::array<int, 16> buttonBindings) {
+MCP23017::MCP23017(int id, std::vector<Output*> buttonBindings) {
     I2cBoard::i2c_id = id;
     pinButtonBindings = buttonBindings;
 }
@@ -16,7 +16,7 @@ bool MCP23017::initialize() {
         return false;
     }
 
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < pinButtonBindings.size(); i++) {
         if (pinButtonBindings[i] != 0) {
             board.pinMode(i, INPUT_PULLUP);
         }
@@ -26,10 +26,10 @@ bool MCP23017::initialize() {
 }
 
 void MCP23017::update() {
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < pinButtonBindings.size(); i++) {
         if (pinButtonBindings[i] != 0) {
             if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) {
-                Joystick.button(pinButtonBindings[i] - 1, true);
+                pinButtonBindings[i]->Set(true);
 
                 button_states[i] = true;
                 debounce_timers[i] = DEBOUNCE_TIME;
@@ -37,7 +37,7 @@ void MCP23017::update() {
             
             else {
                 if (button_states[i] && board.digitalRead(i)) {
-                  Joystick.button(pinButtonBindings[i] - 1, false);
+                    pinButtonBindings[i]->Set(false);
                   button_states[i] = false;
                 }
                 if (debounce_timers[i] > 0) {
