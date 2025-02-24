@@ -24,9 +24,9 @@ Joystick_ dInput{};
 //}
 
 std::vector<Module> allModules = {
-  {"Oli Industrial Box", {new MCP23017(0x20, {allocJ(0+2),allocJ(0+3),allocJ(0+1),allocJ(0+4),allocJ(0+6),allocJ(0+5),allocJ(8),allocJ(7)})}},
-  {"Oli Industrial Box2", {new MCP23017(0x23, {allocJ(8+3),allocJ(8+12),allocJ(8+4),allocJ(8+13),allocJ(8+5),allocJ(8+8),allocJ(8+1),allocJ(8+6),allocJ(8+14),allocJ(8+10),allocJ(8+11),allocJ(8+7),allocJ(8+2),allocJ(8+9),allocJ(8+16),allocJ(8+15)})}},
-  {"Panel3", {new MCP23017(0x22, {allocJ(1),allocJ(2),allocJ(3),allocJ(4),allocJ(5),allocJ(6),allocJ(7),allocJ(8),allocJ(9)})}}},
+//  {"Oli Industrial Box", {new MCP23017(0x20, {allocJ(0+2),allocJ(0+3),allocJ(0+1),allocJ(0+4),allocJ(0+6),allocJ(0+5),allocJ(8),allocJ(7)})}},
+//  {"Oli Industrial Box2", {new MCP23017(0x23, {allocJ(8+3),allocJ(8+12),allocJ(8+4),allocJ(8+13),allocJ(8+5),allocJ(8+8),allocJ(8+1),allocJ(8+6),allocJ(8+14),allocJ(8+10),allocJ(8+11),allocJ(8+7),allocJ(8+2),allocJ(8+9),allocJ(8+16),allocJ(8+15)})}},
+  {"Panel3", {new MCP23017(0x22, {allocJ(1),allocJ(2),allocJ(3),allocJ(4),allocJ(5),allocJ(6),allocJ(7),allocJ(8),allocJ(9),allocJ(10)})}}},
 //{"Fancy Joystick", {new ADS7830(0x48, {})}},
 //  {"Accurate Analog", {new ADS1015(0x49, {1, 2})}}
 };
