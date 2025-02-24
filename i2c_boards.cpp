@@ -29,6 +29,7 @@ void MCP23017::update() {
     for (int i = 0; i < pinButtonBindings.size(); i++) {
         if (pinButtonBindings[i] != 0) {
             if (!board.digitalRead(i) && !button_states[i] && debounce_timers[i] == 0) {
+//              Serial.println("change");
                 pinButtonBindings[i]->Set(true);
 
                 button_states[i] = true;
@@ -37,6 +38,8 @@ void MCP23017::update() {
             
             else {
                 if (button_states[i] && board.digitalRead(i)) {
+//                                Serial.println("change");
+
                     pinButtonBindings[i]->Set(false);
                   button_states[i] = false;
                 }

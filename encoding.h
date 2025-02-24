@@ -12,7 +12,7 @@
 // Converts a bunch of boolean pairs where they are not both true to an integer
 // It works by converting the states to base-3, then outputting an integer
 // Encodes it in stupid little endian
-int PoolMutexEntropy(std::vector<std::pair<bool,bool>> information) {
+static int PoolMutexEntropy(std::vector<std::pair<bool,bool>> information) {
 	int ret=0;
 	// 00:0
 	// 01:1
@@ -21,7 +21,8 @@ int PoolMutexEntropy(std::vector<std::pair<bool,bool>> information) {
 		int trit=0; // the trit at this position
 		// This should not be true, as that would violate the requirements for this function
 		if(information[i].first&&information[i].second) {
-			throw std::invalid_argument("Information["+std::to_string(i)+"] violates mutex rule");
+//        Serial.println("erreror");
+//			throw std::invalid_argument("Information["+std::to_string(i)+"] violates mutex rule");
 		}
 		if(!information[i].first&&!information[i].second) {
 			trit=0;
@@ -40,7 +41,7 @@ int PoolMutexEntropy(std::vector<std::pair<bool,bool>> information) {
 	return ret;
 }
 
-std::vector<std::pair<bool,bool>> SplitMutexEntropy(int inp, int size) {
+static std::vector<std::pair<bool,bool>> SplitMutexEntropy(int inp, int size) {
 	// Check if this is the "null state" (ie: not plugged in)
 	if(inp==0) {
 		return {};
@@ -63,12 +64,12 @@ std::vector<std::pair<bool,bool>> SplitMutexEntropy(int inp, int size) {
 }
 
 // converts 8 booleans to an int
-int32_t encode8ToConstrainedInt(std::vector<bool> vals) {
-	int32_t out=0;
+static int encode8ToConstrainedInt(std::vector<bool> vals) {
+	int out=0;
 	for(int i=0; i<vals.size(); i++) {
-		bool bit=vals[i];
+		bool bitt=vals[i];
 		int exponent=std::pow(2,i);
-		if(bit) {
+		if(bitt) {
 			out+=exponent;
 		}
 	}
@@ -78,7 +79,7 @@ int32_t encode8ToConstrainedInt(std::vector<bool> vals) {
 
 // Port to Java
 // Converts a float from -1 to 1 to 8 booleans
-std::vector<bool> deencodeFloatToVec(float f) {
+static std::vector<bool> deencodeFloatToVec(float f) {
 	int val=0;
 	if(f<0) {
 		val=f*128;
@@ -96,8 +97,8 @@ std::vector<bool> deencodeFloatToVec(float f) {
 
 // From wpilib: hal/src/main/native/athena/FRCDriverStation.cpp 74-82
 // Testing function, simulates what the driver station does
-float mockConverter(int32_t val) {
-	int8_t value=val;
+static float mockConverter(int val) {
+	int value=val;
 	if(value<0) {
 		return value/128.0;
 	} else {

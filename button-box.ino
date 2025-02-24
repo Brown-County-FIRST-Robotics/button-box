@@ -17,9 +17,16 @@ Joystick_ dInput{};
 
 // IMPORTANT NOTE: Dinput button and axis ids are from 1-128 and 1-8 respectively in this program so that 0 can be used as "null" (pin has no binding)
 // They are decremented by 1 to output to buttons 0-127 in DInput
+
+//MutexCoordinater mtx({allocJ()}
+
+//MutexBitOutput* mtxbo(){
+//}
+
 std::vector<Module> allModules = {
-  {"Oli Industrial Box", {new MCP23017(0x20, {alloc(1),alloc(2),alloc(3),alloc(4),alloc(5),alloc(6),alloc(7),alloc(8)})}}
-//  {"Oli Industrial Box2", {new MCP23017(0x23, {10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25})}},
+  {"Oli Industrial Box", {new MCP23017(0x20, {allocJ(0+2),allocJ(0+3),allocJ(0+1),allocJ(0+4),allocJ(0+6),allocJ(0+5),allocJ(8),allocJ(7)})}},
+  {"Oli Industrial Box2", {new MCP23017(0x23, {allocJ(8+3),allocJ(8+12),allocJ(8+4),allocJ(8+13),allocJ(8+5),allocJ(8+8),allocJ(8+1),allocJ(8+6),allocJ(8+14),allocJ(8+10),allocJ(8+11),allocJ(8+7),allocJ(8+2),allocJ(8+9),allocJ(8+16),allocJ(8+15)})}},
+  {"Panel3", {new MCP23017(0x22, {allocJ(1),allocJ(2),allocJ(3),allocJ(4),allocJ(5),allocJ(6),allocJ(7),allocJ(8),allocJ(9)})}}},
 //{"Fancy Joystick", {new ADS7830(0x48, {})}},
 //  {"Accurate Analog", {new ADS1015(0x49, {1, 2})}}
 };
@@ -27,8 +34,7 @@ std::vector<Module> allModules = {
 std::vector<int> activeModules; //list of indices of allModules that are active
 
 void setup() {
-  Serial.begin(9600);
-  while (!Serial) delay(10);
+//  Serial.begin(9600);
 
   checkActiveModules();
 
@@ -58,9 +64,8 @@ void checkActiveModules() { //sets activeModules to the current button box sutup
 
   
 
-  // Serial.println("Active modules:");
-  // for (int i : activeModules) {
-  //   Serial.println(" " + allModules[i].name);
-  // }
+//   Serial.println("Active modules:");
+//   for (int i : activeModules) {
+//     Serial.println("asd");
+//   }
 }
-

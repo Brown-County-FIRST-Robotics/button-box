@@ -1,5 +1,9 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
+#include <Joystick.h>
+
 #include "encoding.h"
 
 class Output{
@@ -14,7 +18,7 @@ private:
 public:
     DigitalJoystickOutput(int ind){index=ind;};
     void Set(bool val){
-        Joystick.setButton(index, val);
+        Joystick.button((uint8_t) index, val);
     }
 };
 
@@ -38,6 +42,7 @@ public:
     POVCoordinater(){};
     void UpstreamSet(bool val, int inner_ind){
         cache[inner_ind]=val;
+        Update();
     }
 };
 class AnalogCoordinater{
@@ -46,19 +51,21 @@ private:
     int ind;
 public:
     void Update(){
+      Joystick.use8bit(true);
         if(ind==5){
-            Joystick.sliderRight(encode8ToConstrainedInt(cache))
+            Joystick.sliderRight(encode8ToConstrainedInt(cache));
         }
         if(ind==4){
-            Joystick.sliderLeft(encode8ToConstrainedInt(cache))
+            Joystick.sliderLeft(encode8ToConstrainedInt(cache));
         }
         if(ind==3){
-            Joystick.Zrotate(encode8ToConstrainedInt(cache))
+            Joystick.Zrotate(encode8ToConstrainedInt(cache));
         }
     }
     AnalogCoordinater(int index){ind=index;};
     void UpstreamSet(bool val, int inner_ind){
         cache[inner_ind]=val;
+        Update();
     }
 };
 
@@ -125,16 +132,17 @@ public:
         double bits=std::log(poss)/std::log(2.0);
         int bits_needed=std::ceil(bits);
         if(outs.size()!=bits_needed){
-            raise std::bad_argument("Mismatch between outputs and length; "+std::to_string(bits_needed)+" bits needed, got "+std::to_string(outs.size()));
+//          Serial.println("error bit");
+//            raise std::bad_argument("Mismatch between outputs and length; "+std::to_string(bits_needed)+" bits needed, got "+std::to_string(outs.size()));
         }
         outputs=outs;
-        cache={len, {false,false}};
+        cache={(size_t) len, {false,false}};
     }
     void Update(){
-        PoolMutexEntropy(cache);
+        int ii=PoolMutexEntropy(cache);
         std::vector<bool> ret;
     	for(int i=0; i<outputs.size(); i++) {
-    		outputs[i].Set(val&((int) std::pow(2,i)));
+    		outputs[i]->Set(ii&((int) std::pow(2,i)));
     	}
     }
     void UpstreamSet(int inner_ind, bool which, bool val){
@@ -162,18 +170,18 @@ public:
     void Set(bool v){
         coordinater->UpstreamSet(index,which,v);
     }
-}
+};
 
 
 
-POVCoordinater povCoord{};
-AnalogCoordinater analogCoord0{3};
-AnalogCoordinater analogCoord1{4};
-AnalogCoordinater analogCoord2{5};
+static POVCoordinater povCoord{};
+static AnalogCoordinater analogCoord0{3};
+static AnalogCoordinater analogCoord1{4};
+static AnalogCoordinater analogCoord2{5};
 
-int digital_outputs=21;
-int pov_bits=3;
-int analog_bits=8;
+static int digital_outputs=21;
+static int pov_bits=3;
+static int analog_bits=8;
 
 
 
@@ -185,7 +193,7 @@ int analog_bits=8;
 // 25-32: encodes it into analog axis 3
 // 33-40: encodes it into analog axis 4
 // 41-48: encodes it into analog axis 5
-Output* alloc(int ind){
+static Output* allocJ(int ind){
     int curr_max=digital_outputs;
     if(ind<=curr_max){
         return new DigitalJoystickOutput(ind);
